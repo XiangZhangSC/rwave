@@ -47,54 +47,22 @@ representive_ocr <- summarize_ocr(mito_stress_test)
 glimpse(representive_ocr)
 ```
 
-Once we have the representive OCRs, we can calculate mitoAPR by using the function `convert_mitoapr`.
+Once we have the representive OCRs, we can calculate glycoAPR and mitoAPR by using the function `summarize_apr`.
 
 ```{r}
-mitoAPR_dat <- representive_ocr %>% 
-  dplyr::select(Well, Group, atp_ocr, max_ocr) %>% 
-  mutate(mitoAPR = map_dbl(atp_ocr, convert_mitoapr), 
-         max_mitoAPR = map_dbl(max_ocr, convert_mitoapr))
-
-final_mitoAPR_dat <- mitoAPR_dat %>% 
-  dplyr::select(Well, Group, mitoAPR, max_mitoAPR)
+APR_dat <- summarize_apr(mito_stress_test, which_assay = "XFe96")
+glimpse(APR_dat)
 ```
 
-We can also calculate glycoAPR. 
-
-```{r}
-glycoAPR_dat <- representive_ocr %>% 
-  dplyr::select(Well, Group, init_ocr, oligo_ocr)
-
-ECAR_dat <- mito_stress_test %>% 
-  dplyr::select(Measurement, Well, Group, ECAR)
-
-updated_glycoAPR_dat <- glycoAPR_dat %>% 
-  left_join(ECAR_dat, by = c("Well", "Group")) %>% 
-  mutate(glycoAPR = pmap_dbl(list(ECAR, init_ocr, oligo_ocr), convert_glycoapr, which_assay = "XFe96"))
-
-final_glycoAPR_dat <- updated_glycoAPR_dat %>% 
-  filter(Measurement == 3 | Measurement == 6) %>% 
-  dplyr::select(Well, Group, Measurement, glycoAPR) %>% 
-  spread(Measurement, glycoAPR) %>% 
-  rename(basal_glycoAPR = `3`, 
-         max_glycoAPR = `6`)
-
-```
+FInally we can visualize the bioenergetic sapce by using the function `sketch_bioenergenic_space`.
 
 ```{r fig.width=10, fig.height=5}
-bioenergetic_dat <- final_mitoAPR_dat %>% 
-  left_join(final_glycoAPR_dat, by = c("Well", "Group")) %>% 
-  filter(Group != "Background")
+sketch_bioenergetic_space(APR_dat, average = TRUE, background = FALSE)
+```
 
-ggplot(bioenergetic_dat, aes(basal_glycoAPR, mitoAPR)) + 
-  geom_point(aes(color = Group), size = 3, alpha = 0.5) + 
-  scale_color_brewer("", palette = "Dark2") + 
-  geom_vline(aes(xintercept = median(max_glycoAPR)), linetype = "dashed") + 
-  geom_hline(aes(yintercept = median(max_mitoAPR)), linetype = "dashed") + 
-  theme_classic() + 
-  labs(x = "Glycolytic ATP Production Rate (pmol/min)", 
-       y = "Mitochondrial ATP Production Rate (pmol/min)") + 
-  coord_fixed() + 
-  theme(legend.position = c(0.1,0.8))
+We can also visualize all the data rather than the average. 
+
+```{r}
+sketch_bioenergetic_space(APR_dat, average = FALSE)
 ```
 
