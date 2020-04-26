@@ -66,3 +66,9 @@ We can also visualize all the data rather than the average.
 sketch_bioenergetic_space(APR_dat, average = FALSE)
 ```
 
+Scientists use mito stress test to benchmark cellular metabolism. We can use a radar chart to visualize the results. 
+
+```{r}
+sketch_seahorse_radar(mito_stress_test, which_assay = "XFe96")
+```
+
