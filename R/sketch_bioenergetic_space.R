@@ -16,10 +16,10 @@ sketch_bioenergetic_space <- function(df, average = TRUE, background = FALSE) {
     dplyr::select(Well, Group, basal_mitoAPR, max_mitoAPR, basal_glycoAPR, max_glycoAPR)
   
   if (background == FALSE) {
-    df1 <- df %>% 
+    df1 <- bioenergetic_dat %>% 
       dplyr::filter(Group != "Background")
   } else {
-    df1 <- df
+    df1 <- bioenergetic_dat
   }
   
   if (average == TRUE) {
@@ -37,21 +37,24 @@ sketch_bioenergetic_space <- function(df, average = TRUE, background = FALSE) {
       geom_errorbarh(aes(xmin = average_glycoAPR - se_glycoAPR, xmax = average_glycoAPR + se_glycoAPR), height = 5) + 
       geom_errorbar(aes(ymin = average_mitoAPR - se_mitoAPR, ymax = average_mitoAPR + se_mitoAPR), width = 5) + 
       scale_color_brewer("", palette = "Dark2") + 
-      geom_vline(aes(xintercept = average_max_glycoAPR, color = Group), linetype = "dashed", size = 0.8) + 
-      geom_hline(aes(yintercept = average_max_mitoAPR, color = Group), linetype = "dashed", size = 0.8) + 
+      geom_rect(aes(xmin = 0, xmax = average_max_glycoAPR, ymin = 0, ymax = average_max_mitoAPR), 
+                fill = "transparent", 
+                linetype = "dashed") + 
       theme_classic() + 
       labs(x = "Glycolytic ATP Production Rate (pmol/min)", 
            y = "Mitochondrial ATP Production Rate (pmol/min)") + 
       coord_fixed()
   } else {
-    ggplot(df1, aes(basal_glycoAPR, basal_mitoAPR, color = Group)) + 
+    ggplot(df1, aes(basal_glycoAPR, basal_mitoAPR)) + 
       geom_point(size = 3, alpha = 0.5) + 
-      scale_color_brewer("", palette = "Dark2") + 
-      geom_vline(aes(xintercept = max_glycoAPR, color = Group), linetype = "dashed", alpha = 0.1) + 
-      geom_hline(aes(yintercept = max_mitoAPR, color = Group), linetype = "dashed", alpha = 0.1) + 
+      geom_rect(aes(xmin = 0, xmax = max_glycoAPR, ymin = 0, ymax = max_mitoAPR), 
+                color = "black", 
+                fill = "transparent", 
+                linetype = "dashed", 
+                size = 0.1) + 
       theme_classic() +
       labs(x = "Glycolytic ATP Production Rate (pmol/min)", 
            y = "Mitochondrial ATP Production Rate (pmol/min)") + 
-      coord_fixed()
+      facet_wrap(~Group, scale = "free")
   }
 }
