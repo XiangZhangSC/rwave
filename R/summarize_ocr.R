@@ -16,7 +16,7 @@ summarize_ocr <- function(df) {
     select(Well, Group, init_ocr, oligo_ocr, fccp_ocr, rot_ocr) %>% 
     mutate(non_mito_ocr = rot_ocr, 
            basal_ocr = init_ocr - non_mito_ocr, 
-           max_ocr = fccp_ocr, 
+           max_ocr = fccp_ocr - rot_ocr, 
            spare_ocr = max_ocr - basal_ocr, 
            atp_ocr = basal_ocr - oligo_ocr, 
            proton_leak = oligo_ocr - non_mito_ocr, 
