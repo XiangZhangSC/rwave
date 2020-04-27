@@ -9,6 +9,9 @@ import_seahorse(x)
 \arguments{
 \item{x}{Excel spreadsheet which contains the Seahorse XF assay result}
 }
+\value{
+a list with two \code{data.frame} corresponding to the Rate and Raw data
+}
 \description{
 Load Seahorse Excel files into R as a data frame
 }
