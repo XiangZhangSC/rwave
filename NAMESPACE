@@ -3,6 +3,8 @@
 export(convert_glycoapr)
 export(convert_mitoapr)
 export(import_seahorse)
+export(qc_o2)
+export(qc_ph)
 export(sketch_bioenergetic_space)
 export(sketch_ecar)
 export(sketch_ocr)
