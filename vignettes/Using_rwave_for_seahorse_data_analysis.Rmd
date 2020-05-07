@@ -72,3 +72,22 @@ Scientists use mito stress test to benchmark cellular metabolism. We can use a r
 sketch_seahorse_radar(mito_stress_test, which_assay = "XFe96")
 ```
 
+A common task of Seahorse analysis is to look for differences between experimental groups. `rwave` provides functions for statistic calculation as well as visualization. Notice that `rwave` uses nonparametric tests because it does not have the normality assumption. 
+
+```{r}
+# Compare APR between groups
+compare_apr(mito_stress_test, stats.only = TRUE)
+
+# Visualize APR difference between groups
+compare_apr(mito_stress_test) %>% sketch_comparison_apr(which_apr = c("basal_mitoAPR", "basal_glycoAPR"))
+```
+
+We can perform similar analysis regarding OCR
+
+```{r}
+# Compare OCR between groups
+compare_ocr(mito_stress_test, stats.only = TRUE)
+
+compare_ocr(mito_stress_test) %>% sketch_comparison_ocr(which_ocr = c("proton_leak", "fccp_ocr"))
+```
+
