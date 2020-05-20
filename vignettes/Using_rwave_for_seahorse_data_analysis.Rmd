@@ -26,9 +26,21 @@ library(ggplot2)
 
 ## Load the data
 
+`import_seahorse` reads the excel file exported by the Wave desktop software (Agilent). Both the rate and raw data will be imported. 
+
 ```{r}
+dat <- import_seahorse("~/Downloads/20180817 E68 BL C2C12.xlsx")
+# the Rate data are included in the package
+dat$Rate
+
 mito_stress_test
 ```
+
+Seahorse machine measures O2 pressure, we can visualize the raw data by using `sketch_o2` function. This is the first step of quality control regarding Seahorse outputs. We can see some wells have infeasible O2 pressure values. 
+```{r}
+sketch_o2(dat$Raw)
+```
+
 
 **rwave** provdes two functions to visualize profiles of OCR and ECAR.
 
