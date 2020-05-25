@@ -20,13 +20,15 @@ shiny_seahorse <- function(seahorse_rate_data) {
       sidebarPanel(
         selectInput(inputId = 'group_id', 
                     label = 'Which experimental condition are you interested?', 
-                    choices = c("Background", "Group 1", "Group 2", "Group 3", "Group 4"), 
+                    choices = unique(seahorse_rate_data$Group), 
                     selected = "Background")
       ), 
       ## things users will see
       mainPanel(
         tabsetPanel(
-          tabPanel(title = 'OCR curves', plotly::plotlyOutput('plot_ocr_line')), 
+          tabPanel(title = 'Data', 
+                   plotly::plotlyOutput('plot_ocr_line'), 
+                   plotly::plotlyOutput(('plot_ecar_line'))), 
           tabPanel(title = 'OCR Summary', DT::DTOutput('table_ocr_summary')), 
           tabPanel(title = 'Bioenergetic space', plotly::plotlyOutput('plot_bioenergetic_space'))
         )
@@ -41,6 +43,13 @@ shiny_seahorse <- function(seahorse_rate_data) {
   server <- function(input, output) {
     output$plot_ocr_line <- plotly::renderPlotly({
       ggplot(seahorse_rate_data, aes(Time, OCR, group = Well)) + 
+        geom_line(alpha = 0.1) + 
+        geom_line(data = filter(seahorse_rate_data, Group == input$group_id), color = "steelblue") + 
+        theme_classic()
+    })
+    
+    output$plot_ecar_line <- plotly::renderPlotly({
+      ggplot(seahorse_rate_data, aes(Time, ECAR, group = Well)) + 
         geom_line(alpha = 0.1) + 
         geom_line(data = filter(seahorse_rate_data, Group == input$group_id), color = "steelblue") + 
         theme_classic()
