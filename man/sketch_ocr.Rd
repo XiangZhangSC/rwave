@@ -4,12 +4,14 @@
 \alias{sketch_ocr}
 \title{Line plots of OCR}
 \usage{
-sketch_ocr(df, trend = TRUE)
+sketch_ocr(df, which_level = "group", trend = TRUE)
 }
 \arguments{
 \item{df}{a \code{data.frame} produced by \code{import_seahorse}}
 
-\item{trend}{a logical value indicates whether the median is used to represent the trend}
+\item{which_level}{a character either "data" or "group"}
+
+\item{trend}{a logical value indicates whether the median of replicates will be used}
 }
 \value{
 This function returns line plots of OCR
