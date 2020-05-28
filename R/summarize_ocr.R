@@ -2,11 +2,12 @@
 #' 
 #' This function returns a set of OCR values describing mito stress test
 #' @param df a \code{data.frame} produced by \code{import_seahorse}
+#' @param which_level a character "well" or "group"
 #' @import dplyr
 #' @import tidyr
 #' @export
-summarize_ocr <- function(df) {
-  df %>% 
+summarize_ocr <- function(df, which_level = "well") {
+  df_summary_well <- df %>% 
     select(Measurement, Well, Group, OCR) %>% 
     spread(Measurement, OCR) %>% 
     rename(init_ocr = `3`, 
@@ -23,4 +24,18 @@ summarize_ocr <- function(df) {
            relative_spare_capacity = spare_ocr / basal_ocr, 
            coupling_efficiency = atp_ocr / basal_ocr, 
            relative_proton_leak = 1 - coupling_efficiency)
+  
+  if (which_level == "group") {
+    df_summary_group <- df_summary_well %>% 
+      gather(what, val, -Well, -Group) %>% 
+      group_by(Group, what) %>% 
+      summarize(mean_val = mean(val), 
+                sd_val = sd(val)) %>% 
+      rename(`Mean` = mean_val, 
+             `Standard deviation` = sd_val)
+    
+    return(df_summary_group)
+  } else if (which_level == "well") {
+    return(df_summary_well)
+  }
 }

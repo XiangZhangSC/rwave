@@ -4,10 +4,12 @@
 \alias{summarize_ocr}
 \title{Representive OCR values in mito stress test}
 \usage{
-summarize_ocr(df)
+summarize_ocr(df, which_level = "well")
 }
 \arguments{
 \item{df}{a \code{data.frame} produced by \code{import_seahorse}}
+
+\item{which_level}{a character "well" or "group"}
 }
 \description{
 This function returns a set of OCR values describing mito stress test
