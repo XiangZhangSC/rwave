@@ -4,12 +4,12 @@
 #' 
 #' @import ggplot2
 #' @param df a \code{data.frame} produced by \code{import_seahorse}
-#' @param which_level a character either "data" or "group"
+#' @param which_level a character either "well" or "group"
 #' @param trend a logical value indicates whether the median is used to represent the trend
 #' @return This function returns line plots of ECAR
 #' @export
 sketch_ecar <- function(df, which_level = "group", trend = TRUE) {
-  if (which_level == "data") {
+  if (which_level == "well") {
     g0 <- ggplot(df, aes(Time, ECAR)) + 
       facet_wrap(~Group) + 
       labs(x = "Time (min)", y = "ECAR (mpH/min)") + 

@@ -9,7 +9,7 @@ sketch_ecar(df, which_level = "group", trend = TRUE)
 \arguments{
 \item{df}{a \code{data.frame} produced by \code{import_seahorse}}
 
-\item{which_level}{a character either "data" or "group"}
+\item{which_level}{a character either "well" or "group"}
 
 \item{trend}{a logical value indicates whether the median is used to represent the trend}
 }
