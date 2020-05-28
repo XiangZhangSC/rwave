@@ -4,10 +4,13 @@
 \alias{compare_ocr}
 \title{OCR comparison between groups}
 \usage{
-compare_ocr(df, stats.only = FALSE)
+compare_ocr(df, robust = TRUE, stats.only = FALSE)
 }
 \arguments{
 \item{df}{a \code{data.frame} with raw data and produced by \code{import_seahorse}}
+
+\item{robust}{a logical variable which indicates non-parametric tests will be used if it is TRUE by default.
+when robust = FALSE, t test or anova will be used depending on the number of groups}
 
 \item{stats.only}{a \code{logical} value that indicates whether only the statistical outcomes are returned}
 }
