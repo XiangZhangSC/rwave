@@ -4,14 +4,14 @@
 \alias{sketch_seahorse_radar}
 \title{Seahorse radar chart}
 \usage{
-sketch_seahorse_radar(df, which_assay, background = FALSE)
+sketch_seahorse_radar(df, which_assay, include.background = FALSE)
 }
 \arguments{
 \item{df}{a \code{data.frame} produced by \code{import_seahorse}}
 
-\item{which_assay}{a \code{character} which can be "XFp", "XFe24", "XF" or "XFe96"}
+\item{which_assay}{a character which can be "XFp", "XFe24", "XF" or "XFe96"}
 
-\item{background}{a logical value indicates whetehr background is included in the plot}
+\item{include.background}{a logical value indicates whetehr background is included in the plot}
 }
 \description{
 This function creates a Radar chart for a Seahorse assay
