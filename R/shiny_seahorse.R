@@ -6,6 +6,7 @@
 #' @import shiny
 #' @import ggplot2
 #' @import dplyr
+#' @import shinyWidgets
 #' @export
 shiny_seahorse <- function(seahorse_rate_data) {
   ###################
@@ -18,10 +19,16 @@ shiny_seahorse <- function(seahorse_rate_data) {
     sidebarLayout(
       ## things users can manipulate
       sidebarPanel(
-        selectInput(inputId = 'group_id', 
+        pickerInput(inputId = 'group_id', 
                     label = 'Which experimental condition are you interested?', 
                     choices = unique(seahorse_rate_data$Group), 
-                    selected = "Background")
+                    selected = "Background", 
+                    multiple = TRUE), 
+        pickerInput(inputId = 'ocr_id', 
+                    label = 'Which OCR do you want to compare between different conditions?', 
+                    choices = c("basal_ocr", "max_ocr", "atp_ocr", "proton_leak"), 
+                    selected = "basal_ocr", 
+                    multiple = TRUE)
       ), 
       ## things users will see
       mainPanel(
@@ -29,7 +36,8 @@ shiny_seahorse <- function(seahorse_rate_data) {
           tabPanel(title = 'Data', 
                    plotly::plotlyOutput('plot_ocr_line'), 
                    plotly::plotlyOutput(('plot_ecar_line'))), 
-          tabPanel(title = 'OCR Summary', DT::DTOutput('table_ocr_summary')), 
+          tabPanel(title = 'Summary', DT::DTOutput('table_ocr_summary')), 
+          tabPanel(title = 'Analysis', plotly::plotlyOutput('plot_group_comparison')), 
           tabPanel(title = 'Bioenergetic space', plotly::plotlyOutput('plot_bioenergetic_space'))
         )
       )
@@ -42,22 +50,26 @@ shiny_seahorse <- function(seahorse_rate_data) {
   
   server <- function(input, output) {
     output$plot_ocr_line <- plotly::renderPlotly({
-      ggplot(seahorse_rate_data, aes(Time, OCR, group = Well)) + 
-        geom_line(alpha = 0.1) + 
-        geom_line(data = filter(seahorse_rate_data, Group == input$group_id), color = "steelblue") + 
-        theme_classic()
+      seahorse_rate_data %>% 
+        filter(Group %in% input$group_id) %>% 
+        sketch_ocr()
     })
     
     output$plot_ecar_line <- plotly::renderPlotly({
-      ggplot(seahorse_rate_data, aes(Time, ECAR, group = Well)) + 
-        geom_line(alpha = 0.1) + 
-        geom_line(data = filter(seahorse_rate_data, Group == input$group_id), color = "steelblue") + 
-        theme_classic()
+      seahorse_rate_data %>% 
+        filter(Group %in% input$group_id) %>% 
+        sketch_ecar()
     })
     
     output$table_ocr_summary <- DT::renderDT({
-      summarize_ocr(seahorse_rate_data) %>% 
+      summarize_ocr(seahorse_rate_data, which_level = "group") %>% 
         DT::datatable()
+    })
+    
+    output$plot_group_comparison <- plotly::renderPlotly({
+      seahorse_rate_data %>% 
+        compare_ocr() %>% 
+        sketch_comparison_ocr(which_ocr = input$ocr_id)
     })
     
     output$plot_bioenergetic_space <- plotly::renderPlotly({
