@@ -4,12 +4,14 @@
 \alias{summarize_apr}
 \title{Quantify ATP production rate}
 \usage{
-summarize_apr(df, which_assay)
+summarize_apr(df, which_assay, which_level)
 }
 \arguments{
 \item{df}{a \code{data.frame} produced by \code{import_seahorse}}
 
 \item{which_assay}{a \code{character} which can be "XFp", "XFe24", "XF" or "XFe96"}
+
+\item{which_level}{a character either "well" or "group"}
 }
 \description{
 This function quantifies glycoAPR and mitoAPR based on OCR and ECAR

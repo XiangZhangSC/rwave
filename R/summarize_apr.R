@@ -4,20 +4,20 @@
 #' 
 #' @param df a \code{data.frame} produced by \code{import_seahorse}
 #' @param which_assay a \code{character} which can be "XFp", "XFe24", "XF" or "XFe96"
-#' 
+#' @param which_level a character either "well" or "group"
 #' @import purrr
 #' @import dplyr
-#' 
+#' @import tidyr
 #' @export
-summarize_apr <- function(df, which_assay) {
-  representive_ocr <- summarize_ocr(df)
+summarize_apr <- function(df, which_assay, which_level) {
+  representive_ocr <- summarize_ocr(df, which_level = "well")
   
   # glycoAPR quantification
   glycoAPR_dat <- representive_ocr %>% 
-    dplyr::select(Well, Group, init_ocr, rot_ocr)
+    select(Well, Group, init_ocr, rot_ocr)
   
   ECAR_dat <- df %>% 
-    dplyr::select(Measurement, Well, Group, ECAR)
+    select(Measurement, Well, Group, ECAR)
   
   updated_glycoAPR_dat <- glycoAPR_dat %>% 
     left_join(ECAR_dat, by = c("Well", "Group")) %>% 
@@ -46,5 +46,14 @@ summarize_apr <- function(df, which_assay) {
            spare_mitoAPR = max_mitoAPR - basal_mitoAPR, 
            spare_glycoAPR = max_glycoAPR - basal_glycoAPR)
   
-  return(APR_dat)
+  if (which_level == "well") {
+    return(APR_dat)
+  } else if (which_level == "group") {
+    APR_dat %>% 
+      gather(what, val, -Well, -Group) %>% 
+      group_by(Group, what) %>% 
+      summarize(mean_val = mean(val)) %>% 
+      ungroup() %>% 
+      spread(what, mean_val)
+  }
 }
