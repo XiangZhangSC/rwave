@@ -29,10 +29,9 @@ summarize_ocr <- function(df, which_level = "well") {
     df_summary_group <- df_summary_well %>% 
       gather(what, val, -Well, -Group) %>% 
       group_by(Group, what) %>% 
-      summarize(mean_val = mean(val), 
-                sd_val = sd(val)) %>% 
-      rename(`Mean` = mean_val, 
-             `Standard deviation` = sd_val)
+      summarize(mean_val = mean(val)) %>% 
+      spread(what, mean_val) %>% 
+      ungroup()
     
     return(df_summary_group)
   } else if (which_level == "well") {
