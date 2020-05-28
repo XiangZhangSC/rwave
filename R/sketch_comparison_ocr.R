@@ -20,7 +20,7 @@ sketch_comparison_ocr <- function(df, which_ocr) {
     geom_point(position = position_jitter(width = 0.2), alpha = 0.3) + 
     stat_summary(fun = mean, na.rm = TRUE, color = "red", geom = "point") + 
     stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), na.rm = TRUE, color = "red", geom = "errorbar", width = 0.1) + 
-    labs(x = NULL, y = NULL) + 
+    labs(x = NULL, y = "OCR (pmol/min)") + 
     theme_classic()
   
   if (length(which_ocr) == 1) {
