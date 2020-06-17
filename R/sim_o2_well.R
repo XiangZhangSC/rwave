@@ -3,7 +3,6 @@
 #' sim_o2_well simulates the O2 emission fluoresence of a single well
 #'
 #' @param ocr a vector of true biological oxygen consumption rates
-#' @param mixing an event data.frame containing the state variable that is to be manipulated
 #' @param tick.num the number of ticks within each measurement period
 #' @param tick.interval the time interval between two ticks in a measurement period
 #' @import deSolve
