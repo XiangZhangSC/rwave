@@ -28,7 +28,7 @@ sim_o2_well <- function(ocr, tick.num = 15, tick.interval = 14) {
     
     # define the o2 data points to be simulated
     dat.sim.init <- data.frame(Measurement = rep(measurement_periods, each = tick.num), 
-                               tick = tick, 
+                               Tick = tick, 
                                time = tick.interval * tick)
     
     # OCR(t)
@@ -90,7 +90,9 @@ sim_o2_well <- function(ocr, tick.num = 15, tick.interval = 14) {
     # simulate the true fluoresence of a single well
     dat.sim %>% 
         mutate(true_fluoresence = map_dbl(O2M, ~ F0 / (.x * Ksv + 1))) %>% 
-        tbl_df()
+        tbl_df() %>% 
+        left_join(dat.sim.init, by = "time") %>% 
+        select(Measurement, Tick, everything())
 }
 
 
