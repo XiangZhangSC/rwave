@@ -1,9 +1,11 @@
-#' Simulate the true O2 emission of a Seahorse assay plate
+#' Simulate the O2 emission of a Seahorse assay plate
 #'
-#' sim_o2_plate simulated the true O2 emission fluoresence in a 96-well plate. 
+#' sim_o2_plate simulated the O2 emission in a 96-well plate. 
 #' The baseline true biological oxygen consumption rate is drawn from a uniform distribution. 
 #' 
 #' @param experiment_setup a data.frame with two columns, group label and number of replicates
+#' @param between_well_variation the standard deviation of fluoresence between different wells
+#' @param within_well_variation the standard deviation of fluoresence within a well
 #' @param num.injections the number of injections will be used in the seahorse assay
 #' @param min.ocr the minimum true biological oxygen consumption rate
 #' @param max.ocr the maximum true biological oxygen consumption rate
@@ -14,7 +16,13 @@
 #' @import purrr
 #' @import stringr
 #' @export
-sim_o2_plate <- function(experiment_setup, num.injections = 4, min.ocr = 0.1, max.ocr = 0.3, background.ocr = 0.1) {
+sim_o2_plate <- function(experiment_setup, 
+                         between_well_variation, 
+                         within_well_variation, 
+                         num.injections = 4, 
+                         min.ocr = 0.1, 
+                         max.ocr = 0.3, 
+                         background.ocr = 0.1) {
     
     # plate set up
     well.row <- LETTERS[1:8]
@@ -35,6 +43,12 @@ sim_o2_plate <- function(experiment_setup, num.injections = 4, min.ocr = 0.1, ma
     # the effect is the same for different groups
     effect_size_injections = runif(num.injections, min = 0, max = 2)
     
+    # Depsite calibration, there is a long period before the 1st measurement.
+    # As a consequence, 10,000 fluoresence units can mean different levels of O2 
+    # in different wells. 
+    num.well <- length(well.id)
+    bias_well <- rnorm(num.well, mean = 0, sd = between_well_variation)
+    
     well_property <- experiment_setup %>% 
         mutate(baseline_ocr = runif(num.injections, min = min.ocr, max = max.ocr), 
                group_label = map2(Group, n, ~rep(.x, each = .y)), 
@@ -45,16 +59,30 @@ sim_o2_plate <- function(experiment_setup, num.injections = 4, min.ocr = 0.1, ma
     # initialize the simulated plate data
     plate.sim <- tibble(Well = well.id, 
                         Group = "From which group?", 
-                        true_ocr = list(rep(background.ocr, times = num.injections + 1)))
+                        true_ocr = list(rep(background.ocr, times = num.injections + 1)), 
+                        bias_well = bias_well)
     
     plate.sim$Group[corner_wells] <- "Background"
     plate.sim$Group[non_corner_wells] <- well_property$group_label
     plate.sim$true_ocr[non_corner_wells] <- well_property$true_ocr
     
+    
     # simulate the true o2 and corresponding fluoresence data
-    plate.sim <- plate.sim %>% 
+    plate.errorfree <- plate.sim %>% 
         mutate(simulated_data = map(true_ocr, sim_o2_well)) %>% 
-        select(Well, Group, simulated_data) %>% 
+        select(Well, Group, simulated_data, bias_well) %>% 
         unnest(simulated_data)
     
+    # Every time the sensor registered a value, there is a measurement error
+    # We assume that every registration is independent
+    num.registration <- nrow(plate.errorfree)
+    measurement_error <- rnorm(num.registration, mean = 0, sd = within_well_variation)
+    
+    plate.errorfree$measurement_error <- measurement_error
+    
+    # add the between well and within well variation to the true fluoresence
+    plate.sim <- plate.errorfree %>% 
+        mutate(`O2 Corrected Em.` = true_fluoresence + bias_well + measurement_error)
+    
+    return(plate.sim)
 }
