@@ -6,7 +6,6 @@
 #' @param tick.num the number of ticks within each measurement period
 #' @param tick.interval the time interval between two ticks in a measurement period
 #' @param mixing_wait_period the time interval between two measurement periods
-#' @param additional_diffusion the extra diffusion rate when the probe position is up
 #' @import deSolve
 #' @import dplyr
 #' @import tibble
@@ -15,14 +14,12 @@
 sim_o2_well <- function(ocr, 
                         tick.num = 15, 
                         tick.interval = 14, 
-                        mixing_wait_period = 120, 
-                        additional_diffusion = 0.05) {
+                        mixing_wait_period = 120) {
     TauP <- 43          # probe response time constant
     TauC <- 246         # From the wall to the medium
     TauAC <- 746        # From the atmosphere to the medium
     TauW <- 296         # From the medium to the wall
     o2_0 <- 151.6900241 # mmHg, Ambient o2 concentration after calibration
-    
     
     num.injections <- length(ocr) - 1           # number of injections (not including background)
     num.measurement <- 3 * (num.injections + 1) # number of measurement periods
@@ -93,7 +90,7 @@ sim_o2_well <- function(ocr,
             ocr <- OCR(t)
             measuring <- probe_position(t)
             dO2M = k_p * (O2C - O2M)
-            dO2C = k_c * (O2W - O2C) + (k_ac + (1 - measuring) * additional_diffusion) * (o2_0 - O2C) - ocr
+            dO2C = k_c * (O2W - O2C) + (k_ac * measuring + (1 - measuring) * k_ac_mixing) * (o2_0 - O2C) - ocr
             dO2W = k_w * (O2C - O2W) + k_aw * (o2_0 - O2W)
             
             list(c(dO2M, dO2C, dO2W), true_OCR = ocr)
@@ -104,7 +101,8 @@ sim_o2_well <- function(ocr,
                     k_c = 1 / TauC, 
                     k_ac = 1 / TauAC, 
                     k_w = 1 / TauW, 
-                    k_aw = 0)
+                    k_aw = 0, 
+                    k_ac_mixing = 0.05) # k_ac when the probe position is up
     
     # Solve the ODE
     out <- ode(y = state, times = times, func = gerencser, parms = parameters) 
