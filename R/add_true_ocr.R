@@ -4,7 +4,7 @@
 #'
 #' @param plate_layout is a data.frame produced by \code{seed_plate}
 #' @param baseline_ocr is a vector of true biological OCR without any injection
-#'
+#' @export
 add_true_ocr <- function(plate_layout, 
                          baseline_ocr, 
                          num.injections = 4) {
