@@ -4,8 +4,8 @@
 #'
 #' @param ocr a vector of true biological oxygen consumption rates, pmol O2 / min
 #' @param tick.num the number of ticks within each measurement period
-#' @param tick.interval the time interval between two ticks in a measurement period
-#' @param mixing_wait_period the time interval between two measurement periods
+#' @param tick.interval the time interval between two ticks in a measurement period, seconds
+#' @param mixing_wait_period the time interval between two measurement periods, seconds
 #' @import deSolve
 #' @import dplyr
 #' @import tibble
@@ -25,20 +25,14 @@ sim_o2_well <- function(ocr,
     num.injections <- length(ocr) - 1           # number of injections (not including background)
     num.measurement <- 3 * (num.injections + 1) # number of measurement periods
     
-    # measurement periods
-    measurement_periods <- seq(from = 1, to = num.measurement, by = 1)
-    
-    # ticks along the measurement periods
-    tick <- seq(from = 0, to = tick.num * num.measurement - 1, by = 1)
-    
     # define the o2 data points to be simulated
-    dat.sim.init <- data.frame(Measurement = rep(measurement_periods, each = tick.num), 
-                               Tick = tick)
+    dat.sim.init <- seed_rawdata_table(num.injections)
+    
     # between the last point of a measurement phase 
     # and the first point of the next measurement phase 
     # there is a "mixing & wait period"
     dat.sim.init <- dat.sim.init %>% 
-        mutate(time = tick.interval * tick + mixing_wait_period * (Measurement - 1))
+        mutate(time = tick.interval * Tick + mixing_wait_period * (Measurement - 1))
                                
     mixing_wait_start <- dat.sim.init %>% 
         filter(Measurement < num.measurement) %>% 
@@ -118,13 +112,13 @@ sim_o2_well <- function(ocr,
     Ksv <- (1/o2_0)*(F0/targetEmission -1)
     
     # simulate the true fluoresence of a single well
-    seahorse_data_sim <- dat.sim %>% 
+    o2_emission_simdat <- dat.sim %>% 
         mutate(true_emission_o2 = map_dbl(O2C, ~ F0 / (.x * Ksv + 1))) %>% 
         tbl_df() %>% 
         right_join(dat.sim.init, by = "time") %>% 
         select(Measurement, Tick, everything())
     
-    return(seahorse_data_sim)
+    return(o2_emission_simdat)
 }
 
 
