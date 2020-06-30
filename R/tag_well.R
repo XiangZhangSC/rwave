@@ -4,7 +4,7 @@
 #'
 #' @import dplyr
 #' @import purrr
-#'
+#' @export
 tag_well <- function(experiment_setup) {
     experiment_setup %>% 
         filter(Group != "Background") %>% 
