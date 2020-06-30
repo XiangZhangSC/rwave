@@ -4,32 +4,14 @@
 \alias{sim_o2_plate}
 \title{Simulate the O2 emission of a Seahorse assay plate}
 \usage{
-sim_o2_plate(
-  experiment_setup,
-  between_well_variation,
-  within_well_variation,
-  num.injections = 4,
-  min.ocr = 0.1,
-  max.ocr = 0.3,
-  background.ocr = 0.1
-)
+sim_o2_plate(experiment_setup, baseline_ocr)
 }
 \arguments{
 \item{experiment_setup}{a data.frame with two columns, group label and number of replicates}
 
-\item{between_well_variation}{the standard deviation of fluoresence between different wells}
-
-\item{within_well_variation}{the standard deviation of fluoresence within a well}
-
-\item{num.injections}{the number of injections will be used in the seahorse assay}
-
-\item{min.ocr}{the minimum true biological oxygen consumption rate}
-
-\item{max.ocr}{the maximum true biological oxygen consumption rate}
-
-\item{background.ocr}{the true biological oxygen consumption rate in the background wells}
+\item{baseline_ocr}{a vector of true biological OCR values without any injection}
 }
 \description{
-sim_o2_plate simulated the O2 emission in a 96-well plate.
-The baseline true biological oxygen consumption rate is drawn from a uniform distribution.
+sim_o2_plate simulated the O2 emission in a 96-well plate with systematic
+errors due to well and injection
 }

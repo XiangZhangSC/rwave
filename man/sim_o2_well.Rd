@@ -4,16 +4,12 @@
 \alias{sim_o2_well}
 \title{Simulate the true O2 emission of a single well}
 \usage{
-sim_o2_well(ocr, tick.num = 15, tick.interval = 14, mixing_wait_period = 120)
+sim_o2_well(ocr, tick.num = 15)
 }
 \arguments{
-\item{ocr}{a vector of true biological oxygen consumption rates, mmHg/s}
+\item{ocr}{a vector of true biological oxygen consumption rates, pmol O2 / min}
 
 \item{tick.num}{the number of ticks within each measurement period}
-
-\item{tick.interval}{the time interval between two ticks in a measurement period}
-
-\item{mixing_wait_period}{the time interval between two measurement periods}
 }
 \description{
 sim_o2_well simulates the O2 emission fluoresence of a single well
