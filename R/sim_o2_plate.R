@@ -5,7 +5,6 @@
 #' 
 #' @param experiment_setup a data.frame with two columns, group label and number of replicates
 #' @param baseline_ocr a vector of true biological OCR values without any injection
-#' @param num.injections the number of injections will be used in the seahorse assay
 #' @import tibble
 #' @import dplyr
 #' @import tidyr
@@ -13,8 +12,7 @@
 #' @import stringr
 #' @export
 sim_o2_plate <- function(experiment_setup, 
-                         baseline_ocr, 
-                         num.injections = 4) {
+                         baseline_ocr) {
     
     # pipette cells from different experimental group into a 96-well plate
     plate_layout <- seed_plate(experiment_setup)
@@ -42,7 +40,7 @@ sim_o2_plate <- function(experiment_setup,
         unnest(deviation_fluoresence_injection)
     
     plate.sim.complete.long <- plate.sim.long %>% 
-        left_join(deviation_fluoresence_injection.df.long, by = c("Well", "Group", "Measurement", "Tick"))
+        left_join(deviation_fluoresence_injection.df.long, by = c("Well", "Group", "Measurement", "Tick", "time"))
     
     # Every time the sensor registered a value, there is a measurement error
     # We assume that every registration is independent
