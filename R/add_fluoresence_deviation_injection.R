@@ -6,6 +6,7 @@
 #' @import dplyr
 #' @import tibble
 #' @import purrr
+#' @export
 add_fluoresence_deviation_injection <- function(plate_layout, num.injections = 4) {
     # the probability of a well is an "outlier"
     prob_outlier <- rbeta(1, 2, 94)
