@@ -4,21 +4,14 @@
 \alias{sim_ph_well}
 \title{Simulate the true pH emission of a single well}
 \usage{
-sim_ph_well(
-  glycolysis,
-  tick.num = 15,
-  tick.interval = 14,
-  mixing_wait_period = 120
-)
+sim_ph_well(ocr, glycolysis, tick.num = 15)
 }
 \arguments{
+\item{ocr}{a vector of true biological oxygen consumption rates, pmol O2 / min}
+
 \item{glycolysis}{a vector of true glycolysis rates, mpH / min}
 
 \item{tick.num}{the number of ticks within each measurement period}
-
-\item{tick.interval}{the time interval between two ticks in a measurement period}
-
-\item{mixing_wait_period}{the time interval between two measurement periods}
 }
 \description{
 sim_ph_well simulates the pH emission fluoresence of a single well
