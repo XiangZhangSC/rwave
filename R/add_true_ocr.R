@@ -18,8 +18,8 @@ add_true_ocr <- function(plate_layout,
     # the effect is the same for different groups
     # No injection during the 1st measurement period
     # After injection, the OCR cannot be lower than the baseline
-    deviation_ocr_injection <- tibble(which_injection = c('No injection', injection.id), 
-                                      deviation_ocr_injection = c(0, rexp(num.injections, rate = 0.1)))
+    deviation_ocr_injection <- tibble(Injection = c('No injection', injection.id), 
+                                      deviation_ocr_injection = c(0, rnorm(num.injections, mean = 0, sd = 10)))
     
     plate.sim <- plate_layout %>% 
         left_join(baseline_ocr.df, by = "Group") %>% 
