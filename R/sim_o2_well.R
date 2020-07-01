@@ -67,7 +67,7 @@ sim_o2_well <- function(ocr,
                     k_ac = 1 / TauAC, 
                     k_w = 1 / TauW, 
                     k_aw = 0, 
-                    Vc = 20,            # Chamber volume ul
+                    Vc = 22.7,          # Chamber volume ul
                     k_ac_mixing = 0.05) # k_ac when the probe position is up 
     
     # Solve the ODE
