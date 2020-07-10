@@ -27,7 +27,7 @@ sim_o2_well <- function(ocr,
     # between the last point of a measurement phase 
     # and the first point of the next measurement phase 
     # there is a "mixing & wait period"
-    mixing_wait_period <- add_mixing_wait_period(dat.sim.init)
+    mixing_wait_period <- add_mixing_wait_period(dat.sim.init, num.injections)
     
     # OCR(t)
     ## step 1 create a time-series
