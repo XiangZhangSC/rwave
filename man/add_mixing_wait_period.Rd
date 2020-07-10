@@ -4,10 +4,12 @@
 \alias{add_mixing_wait_period}
 \title{Add extra ticks corresponding to the mixing & wait period}
 \usage{
-add_mixing_wait_period(dat.sim.init, num.injections = 4)
+add_mixing_wait_period(dat.sim.init, num.injections)
 }
 \arguments{
 \item{dat.sim.init}{a data frame produced by \code{seed_rawdata_table}}
+
+\item{num.injections}{the number of injections}
 }
 \description{
 Add extra ticks corresponding to the mixing & wait period

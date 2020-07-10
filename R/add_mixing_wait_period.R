@@ -1,13 +1,14 @@
 #' Add extra ticks corresponding to the mixing & wait period
 #'
 #' @param dat.sim.init a data frame produced by \code{seed_rawdata_table}
+#' @param num.injections the number of injections
 #'
 #' @import dplyr
 #' @import tibble
 #' @import tidyr
 #' @import purrr
 #' @export
-add_mixing_wait_period <- function(dat.sim.init, num.injections = 4) {
+add_mixing_wait_period <- function(dat.sim.init, num.injections) {
     
     num.measurement <- 3 * (num.injections + 1) # number of measurement periods
     
