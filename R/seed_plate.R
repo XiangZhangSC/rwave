@@ -4,11 +4,14 @@
 #' 
 #' @param experiment_setup a data frame with two columns Group and n
 #' @param cell_number_per_well the targeted cell counts per well
+#' @param what_test the name of stress test e.g. "mito"
 #' @import tibble
 #'
 #' @export
 
-seed_plate <- function(experiment_setup, cell_number_per_well) {
+seed_plate <- function(experiment_setup, 
+                       cell_number_per_well, 
+                       what_test = "mito") {
     # plate set up
     well.row <- LETTERS[1:8]
     
@@ -36,6 +39,8 @@ seed_plate <- function(experiment_setup, cell_number_per_well) {
     # there is no cells in corner wells
     # for other non corner wells, the cell numbers fluctuate around the target number
     plate.sim$cell_n[non_corner_wells] <- rpois(92, lambda = cell_number_per_well)
+    
+    plate.sim$what_test <- what_test
     
     return(plate.sim)
 }

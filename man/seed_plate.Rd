@@ -4,12 +4,14 @@
 \alias{seed_plate}
 \title{Initialize the Seahorse XF output}
 \usage{
-seed_plate(experiment_setup, cell_number_per_well)
+seed_plate(experiment_setup, cell_number_per_well, what_test = "mito")
 }
 \arguments{
 \item{experiment_setup}{a data frame with two columns Group and n}
 
 \item{cell_number_per_well}{the targeted cell counts per well}
+
+\item{what_test}{the name of stress test e.g. "mito"}
 }
 \description{
 seed_plate produces a data frame with two columns Well and group Tag.
