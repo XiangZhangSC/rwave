@@ -4,12 +4,14 @@
 \alias{sim_o2_plate}
 \title{Simulate the O2 emission of a Seahorse assay plate}
 \usage{
-sim_o2_plate(experiment_setup, baseline_ocr)
+sim_o2_plate(experiment_setup, ocr_per_cell, cell_number_per_well)
 }
 \arguments{
 \item{experiment_setup}{a data.frame with two columns, group label and number of replicates}
 
-\item{baseline_ocr}{a vector of true biological OCR values without any injection}
+\item{ocr_per_cell}{true biological OCR per cell}
+
+\item{cell_number_per_well}{pre-determined cell number per well}
 }
 \description{
 sim_o2_plate simulated the O2 emission in a 96-well plate with systematic

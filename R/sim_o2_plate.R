@@ -4,7 +4,8 @@
 #' errors due to well and injection
 #' 
 #' @param experiment_setup a data.frame with two columns, group label and number of replicates
-#' @param baseline_ocr a vector of true biological OCR values without any injection
+#' @param ocr_per_cell true biological OCR per cell
+#' @param cell_number_per_well pre-determined cell number per well
 #' @import tibble
 #' @import dplyr
 #' @import tidyr
@@ -12,21 +13,20 @@
 #' @import stringr
 #' @export
 sim_o2_plate <- function(experiment_setup, 
-                         baseline_ocr) {
+                         ocr_per_cell, 
+                         cell_number_per_well) {
     
     # pipette cells from different experimental group into a 96-well plate
-    plate_layout <- seed_plate(experiment_setup)
+    plate_layout <- seed_plate(experiment_setup, cell_number_per_well)
     
     # cells cultured with different experimental groups may have different 
     # true biological OCR corresponding to different ture o2 emission
     plate.sim <- plate_layout %>% 
-        add_true_ocr(baseline_ocr) %>% 
+        add_true_ocr(ocr_per_cell) %>% 
         mutate(simulated_data = map(data, ~sim_o2_well(.x$true_ocr)))
     
-    ## There is a long period before the 1st measurement.
-    ## As a consequence, 10,000 fluoresence units can mean different levels of O2 
-    ## in different wells. 
-    plate.sim$deviation_fluoresence_well <- rnorm(96, mean = 0, sd = 1000)
+    ## variation in fluorophore sleeve calibration
+    plate.sim$deviation_fluoresence_well <- rnorm(96, mean = 0, sd = 500)
     
     plate.sim.long <- plate.sim %>% 
         select(-data) %>% 
