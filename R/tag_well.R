@@ -4,6 +4,7 @@
 #'
 #' @import dplyr
 #' @import purrr
+#' @import tidyr
 #' @export
 tag_well <- function(experiment_setup) {
     experiment_setup %>% 
