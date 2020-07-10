@@ -4,12 +4,12 @@
 \alias{add_true_ocr}
 \title{Add true OCR to every well in a plate}
 \usage{
-add_true_ocr(plate_layout, baseline_ocr, num.injections = 4)
+add_true_ocr(plate_layout, ocr_per_cell)
 }
 \arguments{
 \item{plate_layout}{is a data.frame produced by \code{seed_plate}}
 
-\item{baseline_ocr}{is a vector of true biological OCR without any injection}
+\item{ocr_per_cell}{true biological OCR of a single cell without any injection}
 }
 \description{
 add_true_ocr spikes in true biological OCR in every well
