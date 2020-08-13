@@ -20,7 +20,7 @@ sim_o2_plate <- function(experiment_setup,
     plate_layout <- seed_plate(experiment_setup, cell_number_per_well)
     
     # cells cultured with different experimental groups may have different 
-    # true biological OCR corresponding to different ture o2 emission
+    # true biological OCR corresponding to different true o2 emission
     plate.sim <- plate_layout %>% 
         add_true_ocr(ocr_per_cell) %>% 
         mutate(simulated_data = map(data, ~sim_o2_well(.x$true_ocr)))
@@ -32,9 +32,9 @@ sim_o2_plate <- function(experiment_setup,
         select(-data) %>% 
         unnest(simulated_data)
     
-    ## Sometimes after an injection, all the fluoresence values afterwards will be 
+    ## Sometimes after an injection, all the fluorescence values afterwards will be 
     ## larger or smaller than what should be 
-    deviation_fluoresence_injection.df <- add_fluoresence_deviation_injection(plate_layout)
+    deviation_fluoresence_injection.df <- add_fluorescence_deviation_injection(plate_layout)
     
     deviation_fluoresence_injection.df.long <- deviation_fluoresence_injection.df %>% 
         unnest(deviation_fluoresence_injection)
@@ -42,13 +42,15 @@ sim_o2_plate <- function(experiment_setup,
     plate.sim.complete.long <- plate.sim.long %>% 
         left_join(deviation_fluoresence_injection.df.long, by = c("Well", "Group", "Measurement", "Tick", "time"))
     
+    ## Fluorescence drift (fluorescence intensity value changes even without respiring biological material)
+    
     # Every time the sensor registered a value, there is a measurement error
     # We assume that every registration is independent
     plate.sim.final <- plate.sim.complete.long %>% 
         mutate(`O2 Corrected Em.` = pmap_dbl(list(true_emission_o2, deviation_fluoresence_well, deviation_fluoresence_injection), 
                                             ~ rnorm(1, 
                                                     mean = ..1 + ..2 + ..3, 
-                                                    sd = 10)))
+                                                    sd = 1)))
     
     return(plate.sim.final)
 }
