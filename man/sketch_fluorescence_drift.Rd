@@ -4,10 +4,14 @@
 \alias{sketch_fluorescence_drift}
 \title{Visualization of fluorescence drift constants}
 \usage{
-sketch_fluorescence_drift(df)
+sketch_fluorescence_drift(df, drift.constant = TRUE, num.ticks)
 }
 \arguments{
 \item{df}{is a data frame produced by \code{qc_fluorescence_drift}}
+
+\item{drift.constant}{is a logic value indicates whether only plot drift constants}
+
+\item{num.ticks}{a numeric value produced by \code{summarize_assay}}
 }
 \description{
 A significant drift will be highlighted by a red dot, otherwise it is black
